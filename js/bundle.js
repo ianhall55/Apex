@@ -58,21 +58,30 @@
 	    let $body = $("body");
 	    let startEl = $(".start");
 	    startEl.remove();
+	
 	    startGame($body.height(), $body.width());
 	  });
 	
 	});
 	
 	const startGame = function(height, width){
-	
+	  console.log("start");
+	  $(".game").append("<canvas id='canvas'></canvas>");
 	  let canvas = document.getElementById("canvas");
 	  let ctx = canvas.getContext("2d");
 	  let gameOptions = {ctx: ctx, height: height, width: width};
 	  let gameView = new GameView(gameOptions);
 	  canvas.width = gameView.game.DIM_X;
 	  canvas.height = gameView.game.DIM_Y;
+	  window.width = gameView.game.DIM_X;
+	  window.height = gameView.game.DIM_Y;
 	  canvas.style.backgroundColor = "white";
-	  gameView.start();
+	  gameView.start(restart);
+	};
+	
+	const restart = function(){
+	  
+	
 	};
 
 
@@ -89,13 +98,41 @@
 	    this.ACCELERATION = 0.5;
 	  }
 	
-	  start() {
+	  start(restart) {
 	    let gameView = this;
 	    gameView.bindKeyHandlers(this.game.player);
-	    setInterval( function() {
+	
+	    let interval = setInterval( function() {
+	
+	      if (gameView.game.over()){
+	        gameView.endGame(interval, restart);
+	      }
 	      gameView.game.step();
 	      gameView.game.draw(gameView.ctx);
 	    }, 20);
+	  }
+	
+	  endGame(interval, restart){
+	    clearInterval(interval);
+	    let $canvas = $("#canvas");
+	    $canvas.remove();
+	    if (this.game.won()){
+	      $("body").append(
+	      `<div class=${"over"}><h1>YOU ARE THE APEX PREDATOR</h1><h2>Press spacebar to play again</h2></div>`
+	      );
+	    } else {
+	      $("body").append(
+	      `<div class=${"over"}><h1>GAME OVER</h1><h2>Press spacebar to play again</h2></div>`
+	      );
+	    }
+	    this.playAgain(restart);
+	  }
+	
+	  playAgain(restart){
+	    key('space', ()=>{
+	      $(".over").remove();
+	      restart();
+	    });
 	  }
 	
 	  bindKeyHandlers(player){
@@ -103,6 +140,13 @@
 	    key('s', ()=>{player.power([0,(this.ACCELERATION)]);});
 	    key('a', ()=>{player.power([-(this.ACCELERATION),0]);});
 	    key('d', ()=>{player.power([(this.ACCELERATION),0]);});
+	
+	    key('up', ()=>{player.power([0,-(this.ACCELERATION)]);});
+	    key('down', ()=>{player.power([0,(this.ACCELERATION)]);});
+	    key('left', ()=>{player.power([-(this.ACCELERATION),0]);});
+	    key('right', ()=>{player.power([(this.ACCELERATION),0]);});
+	
+	    key('space', ()=>{null;});
 	  }
 	}
 	
@@ -135,7 +179,7 @@
 	
 	  addLifeForms() {
 	    let lifeForms = [];
-	    for (let i=0; i < 400; i++) {
+	    for (let i=0; i < this.NUM_LIFE_FORMS; i++) {
 	      let rad;
 	      if (i < 250) {
 	        rad = Util.randomRadius(1,5);
@@ -216,8 +260,20 @@
 	    this.checkCollisions();
 	  }
 	
-	  absorb(lifeForm) {
+	  over(){
+	    let over = false;
+	    if (this.playerDead() || this.won()){
+	      over = true;
+	    }
+	    return over;
+	  }
 	
+	  playerDead(){
+	    return !!(this.player.radius <= 0);
+	  }
+	
+	  won(){
+	    return !!(this.lifeForms.length <= 1);
 	  }
 	
 	  remove(lifeForm){
@@ -356,9 +412,9 @@
 	      otherObject.radius = otherObject.radius + Util.GROWTH_RATE;
 	    }
 	
-	    if (this.radius < 1) {
+	    if (this.radius <= 0) {
 	      this.game.remove(this);
-	    } else if (otherObject.radius < 1) {
+	    } else if (otherObject.radius <= 0) {
 	      this.game.remove(otherObject);
 	    }
 	  }
@@ -375,7 +431,7 @@
 	const Util = {
 	  MAX_LIFE_RADIUS: 1,
 	  MIN_LIFE_RADIUS: 20,
-	  ABSORB_RATE: 3,
+	  ABSORB_RATE: 2.25,
 	  GROWTH_RATE: 0.75,
 	
 	
@@ -421,7 +477,7 @@
 	class Player extends MovingObject {
 	  constructor(options = {}){
 	    options.color = "#C93200";
-	    options.radius = 3;
+	    options.radius = 300;
 	    options.vel = [0,0];
 	
 	    super(options);
