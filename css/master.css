@@ -1,0 +1,30 @@
+
+.game {
+
+}
+
+body{
+  font-family: roboto, sans-serif;
+  height: 100vh;
+}
+
+.start {
+  height: 20%;
+  width: 100%;
+  display: flex;
+  margin-auto;
+  margin: auto;
+  flex-direction: column;
+  padding-top: 20%;
+}
+
+
+h1 {
+    text-align: center;
+    font-size: 80px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 30px;
+}
