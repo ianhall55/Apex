@@ -1,12 +1,16 @@
+[live][apexBit]
+
+[apexBit]: http://apex.bitballoon.com/
+
 ## Apex
 
-Apex is a classic survival game, inspired by agar.io 
+Apex is a classic survival game, inspired by agar.io
 
 ![start_screen](/images/start.png)
 
 ## Gameplay
 
-Players can move around using the arrow keys or 'w','a','s','d'
+Players can move around using the arrow keys or w,a,s,d
 
 You start in the middle of the window as a small life form and are surrounded by life forms of varying sizes.  
 
