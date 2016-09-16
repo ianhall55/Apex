@@ -179,7 +179,15 @@
 	
 	  addLifeForms() {
 	    let lifeForms = [];
-	    for (let i=0; i < this.NUM_LIFE_FORMS; i++) {
+	    let num;
+	    if (this.DIM_X < 1000 || this.DIM_Y < 600) {
+	      num = 300;
+	    } else if (this.DIM_X < 800 || this.DIM_Y < 400 ) {
+	      num = 250;
+	    } else {
+	      num = this.NUM_LIFE_FORMS;
+	    }
+	    for (let i=0; i < num; i++) {
 	      let rad;
 	      if (i < 250) {
 	        rad = Util.randomRadius(1,5);
@@ -192,11 +200,11 @@
 	      } else if (394 <= i && i < 396) {
 	        rad = 30;
 	      } else if (396 <= i && i < 398) {
-	        rad = 40;
+	        rad = 35;
 	      } else if (398 <= i && i < 399) {
-	        rad = 50;
+	        rad = 40;
 	      } else if (i === 399){
-	        rad = 60;
+	        rad = 50;
 	      }
 	
 	      let position = this.getRandomPosition(rad);
@@ -269,7 +277,7 @@
 	  }
 	
 	  playerDead(){
-	    return !!(this.player.radius <= 0);
+	    return !!(this.player.radius <= 0.5);
 	  }
 	
 	  won(){
@@ -412,9 +420,9 @@
 	      otherObject.radius = otherObject.radius + Util.GROWTH_RATE;
 	    }
 	
-	    if (this.radius <= 0) {
+	    if (this.radius <= 0.5) {
 	      this.game.remove(this);
-	    } else if (otherObject.radius <= 0) {
+	    } else if (otherObject.radius <= 0.5) {
 	      this.game.remove(otherObject);
 	    }
 	  }
@@ -432,7 +440,7 @@
 	  MAX_LIFE_RADIUS: 1,
 	  MIN_LIFE_RADIUS: 20,
 	  ABSORB_RATE: 2.25,
-	  GROWTH_RATE: 0.75,
+	  GROWTH_RATE: 0.65,
 	
 	
 	  getRandomNum(min, max) {
@@ -477,7 +485,7 @@
 	class Player extends MovingObject {
 	  constructor(options = {}){
 	    options.color = "#C93200";
-	    options.radius = 300;
+	    options.radius = 4;
 	    options.vel = [0,0];
 	
 	    super(options);

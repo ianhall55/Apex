@@ -18,6 +18,16 @@ body{
   padding-top: 20%;
 }
 
+.over {
+  height: 20%;
+  width: 100%;
+  display: flex;
+  margin-auto;
+  margin: auto;
+  flex-direction: column;
+  padding-top: 20%;
+}
+
 
 h1 {
     text-align: center;
